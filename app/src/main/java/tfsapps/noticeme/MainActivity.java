@@ -7,14 +7,23 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.Image;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -32,6 +41,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private Timer mainTimer1;                    //タイマー用
     private MainTimerTask mainTimerTask1;        //タイマタスククラス
     private Handler mHandler = new Handler();   //UI Threadへのpost用ハンドラ
+
+    private boolean blinking = false;
+    public Timer blinkTimer;					//タイマー用
+    public BlinkingTask blinkTimerTask;		//タイマタスククラス
+    public Handler bHandler = new Handler();   //UI Threadへのpost用ハンドラ
+
+    //  ライト関連
+    private CameraManager mCameraManager;
+    private String mCameraId = null;
+    private boolean isOn = false;
+
+    private int db_interval = 1;
+    private int db_volume = 1;
+
+    //アラーム
+    private MediaPlayer alarm;
+    private boolean is_set_alarm = true;        //アラーム設定
+
 
     //緯度、軽度
     private double now_ido = 0.0f;         //今回の位置
@@ -64,10 +91,189 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         } else {
 
         }
+
+        //  カメラ初期化
+        mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        mCameraManager.registerTorchCallback(new CameraManager.TorchCallback() {
+            @Override
+            public void onTorchModeChanged(String cameraId, boolean enabled) {
+                super.onTorchModeChanged(cameraId, enabled);
+                mCameraId = cameraId;
+                isOn = enabled;
+            }
+        }, new Handler());
+
     }
 
+    /*
+        アプリスタート処理
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        //DBのロード
+        /* データベース */
+//        helper = new MyOpenHelper(this);
+//        AppDBInitRoad();
+
+        if (alarm == null){
+            alarm = MediaPlayer.create(this, R.raw.alarm);
+        }
+        DisplayScreen();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        //動画
+        //mRewardedVideoAd.resume(this);
+        // WakeLockを取得
+//        wakeLock.acquire();
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        //  DB更新
+//        AppDBUpdated();
+        //mRewardedVideoAd.pause(this);
+        // WakeLockを解放
+//        wakeLock.release();
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        //  DB更新
+//        AppDBUpdated();
+    }
+    /*
+        アプリ終了処理
+     */
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        //カメラ
+        if (mCameraManager != null)
+        {
+            mCameraManager = null;
+        }
+        //  DB更新
+//        AppDBUpdated();
+        //動画
+        //mRewardedVideoAd.destroy(this);
+    }
+
+    /***************************************************
+         画面描画処理
+     **************************************************/
+    public void DisplayScreen(){
+        String tmp_str = "";
+
+        TextView txt_gps = findViewById(R.id.text_gps_status);
+        TextView txt_blink = findViewById(R.id.text_light);
+        TextView txt_volume = findViewById(R.id.text_volume);
+
+        ImageButton img_gps = findViewById(R.id.btn_img_pos);
+        ImageButton img_mail = findViewById(R.id.btn_img_mail);
+        ImageButton img_light = findViewById(R.id.btn_img_light);
+        ImageButton img_sound = findViewById(R.id.btn_img_sound);
+        ImageButton img_mess = findViewById(R.id.btn_img_mess);
+
+        //位置情報取得ならば
+        if (now_ido == 0.0f || now_keido == 0.0f){
+            if (get_GPS == false) {
+                tmp_str = "左図アイコンのタップで現在位置を取得します";
+            }
+            else{
+                tmp_str = "現在位置・・・取得中・・・";
+            }
+            img_gps.setImageResource(R.drawable.gps0);
+            img_mail.setImageResource(R.drawable.mail0);
+        }
+        else{
+            tmp_str = "　経度:"+now_keido+"\n　緯度:"+now_ido;
+            img_gps.setImageResource(R.drawable.gps1);
+            img_mail.setImageResource(R.drawable.mail1);
+        }
+        txt_gps.setText(tmp_str);
+
+        //ライト描画
+        if (blinkTimer == null){
+            img_light.setImageResource(R.drawable.light0);
+        }
+        else{
+            img_light.setImageResource(R.drawable.light1);
+        }
+        if (db_interval == 0) {
+            txt_blink.setText("常灯:" + db_interval);
+        }
+        else {
+            txt_blink.setText("点滅:" + db_interval);
+        }
+
+        //サウンド描画
+        if (alarm.isPlaying() == false){
+            img_sound.setImageResource(R.drawable.sound0);
+        }
+        else{
+            img_sound.setImageResource(R.drawable.sound1);
+        }
+        txt_volume.setText("音量:"+db_volume);
+
+        //近距離メッセージ
+       img_mess.setBackgroundResource(R.drawable.mess1);
+    }
+
+    /***************************************************
+         各種ボタン処理
+     **************************************************/
+    // POS
+    public void onPos(View view){
+        /*
+        //タイマーインスタンス生成
+        this.mainTimer1 = new Timer();
+        //タスククラスインスタンス生成
+        this.mainTimerTask1 = new MainTimerTask();
+        //タイマースケジュール設定＆開始
+        this.mainTimer1.schedule(mainTimerTask1, 0, 100);
+         */
+        locationStart();
+        DisplayScreen();
+    }
+    // MAIL
+    public void onMail(View view){
+    }
+    // Light
+    public void onLight(View view){
+        if (blinkTimer == null) {
+            light_ON();
+        }
+        else{
+            light_OFF();
+        }
+        DisplayScreen();
+    }
+    // Alarm
+    public void onAlarm(View view){
+        if (!alarm.isPlaying()){
+            soundStart();
+        }
+        else{
+            soundStop();
+        }
+        DisplayScreen();
+    }
+    // Message
+    public void onMess(View view){
+    }
+
+
+    /***************************************************
+        GPS位置情報取得
+     **************************************************/
     public void locationStart() {
 //        Log.d("debug", "locationStart()");
+
+        now_ido = 0.0f;
+        now_keido = 0.0f;
 
         // LocationManager インスタンス生成
         locationManager =
@@ -112,9 +318,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String tmp = "";
         int id = 0;
 
+        /*
+        //連続して取得する場合は、mainTimer1を使って制御すること
         if (this.mainTimer1 == null) {
             return;
         }
+         */
 
         if (get_GPS) {
             get_GPS = false;
@@ -123,19 +332,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
 
-        ido = location.getLatitude();
-        keido = location.getLongitude();
-
         now_ido = location.getLatitude();
         now_keido = location.getLongitude();
-
-/*
-        Toast toast = Toast.makeText(this,
-                "UPDATE="+GPS_type+"!!\n" + "緯度：" + ido + "　経度：" + keido, Toast.LENGTH_SHORT);
-        toast.show();
-*/
-//        setContentView(R.layout.activity_sub);
-
+        DisplayScreen();
     }
 
     @Override
@@ -148,6 +347,56 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
+
+    /***************************************************
+        ライト処理
+    ****************************************************/
+    /*************************************
+     *   ライトＯＮ
+     *********************************** */
+    public void light_on_exec() {
+        if(mCameraId == null){
+            return;
+        }
+        try {
+            mCameraManager.setTorchMode(mCameraId, blinking);
+        } catch (CameraAccessException e) {
+            //エラー処理
+            e.printStackTrace();
+        }
+    }
+    public void light_ON() {
+
+        if (db_interval == 0){
+            blinking = true;    //常時点灯
+            light_on_exec();
+        }
+        else{
+            this.blinkTimer = new Timer();
+            this.blinkTimerTask = new BlinkingTask();
+            this.blinkTimer.schedule(blinkTimerTask, (db_interval*100), (db_interval*100));
+        }
+    }
+    /*************************************
+     *   ライトＯＦＦ
+     *********************************** */
+    public void light_OFF() {
+        if(mCameraId == null){
+            return;
+        }
+        try {
+            mCameraManager.setTorchMode(mCameraId, false);
+        } catch (CameraAccessException e) {
+            //エラー処理
+            e.printStackTrace();
+        }
+
+        // スレッド停止
+        if (this.blinkTimer != null) {
+            this.blinkTimer.cancel();
+            this.blinkTimer = null;
+        }
+    }
 
     /**
      * タイマータスク派生クラス
@@ -166,6 +415,48 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 //                    SubShow();
                 }
             });
+        }
+    }
+    /**
+     * タイマータスク派生クラス
+     * run()に定周期で処理したい内容を記述
+     *
+     */
+    public class BlinkingTask extends TimerTask {
+        @Override
+        public void run() {
+            //ここに定周期で実行したい処理を記述します
+            bHandler.post( new Runnable() {
+                public void run() {
+                    light_on_exec();
+                    if (blinking){
+                        blinking = false;
+                    }
+                    else{
+                        blinking = true;
+                    }
+                }
+            });
+        }
+    }
+
+    /***************************************************
+         アラーム処理
+     ****************************************************/
+    /* 効果音スタート */
+    public void soundStart(){
+
+        if (!alarm.isPlaying()) {
+            alarm.setLooping(true);
+            alarm.start();
+        }
+    }
+
+    /* 効果音ストップ */
+    public void soundStop(){
+        if (alarm != null) {
+            //アラーム
+            alarm.pause();
         }
     }
 }
