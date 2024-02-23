@@ -19,6 +19,7 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.Image;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -69,8 +70,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private MediaPlayer alarm;
     private boolean is_set_alarm = true;        //アラーム設定
 
+    //BlueMessage
+    private String edit_str;
+    private String recv_str;
+    private String send_str;
 
-    //緯度、軽度
+    //メール　緯度、軽度
+    private Intent intent;
+    private String mess_mail = "";
     private double now_ido = 0.0f;         //今回の位置
     private double now_keido = 0.0f;       //今回の位置
 
@@ -177,9 +184,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //mRewardedVideoAd.destroy(this);
     }
 
-    /* **************************************************
-    シークバー　選択時の処理
-****************************************************/
+    /***************************************************
+        シークバー　選択時の処理
+    ****************************************************/
     public void SeekSelect(){
         //  点滅間隔
         seek_blinkinterval = (SeekBar)findViewById(R.id.bar_light);
@@ -321,7 +328,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         DisplayScreen();
     }
     // MAIL
+    public void composeEmail(String addresses, String subject, String message) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, message);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+    public void mailSend() {
+        /* 送信 */
+        String all_mailaddr = "";
+        String message = "";
+        String mailtitle = "アプリ通知メール";
+        message = "" + mess_mail + "\n";
+        composeEmail(all_mailaddr, mailtitle, message);
+    }
     public void onMail(View view){
+        mailSend();
     }
     // Light
     public void onLight(View view){
@@ -356,6 +383,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
     // Message
     public void onMess(View view){
+        setContentView(R.layout.activity_sub);
+        DisplaySubScreen();
     }
 
 
@@ -427,6 +456,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         now_ido = location.getLatitude();
         now_keido = location.getLongitude();
+        mess_mail = "現在の緯度,経度\n" + "http://maps.apple.com/?q=" + location.getLatitude() + "," + location.getLongitude();
         DisplayScreen();
     }
 
@@ -553,4 +583,36 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             alarm.pause();
         }
     }
+
+
+    /***************************************************
+        サブ画面処理
+     ****************************************************/
+    public void DisplaySubScreen(){
+        String tmp_text = "";
+
+        TextView txt_blue_status = findViewById(R.id.text_blue_status);
+        ImageButton img_blue = findViewById(R.id.btn_img_blue);
+
+        if (true){
+
+        }
+
+    }
+
+    // メイン画面へ遷移
+    public void onMainSub(View view) {
+        setContentView(R.layout.activity_main);
+        DisplayScreen();
+    }
+    // ペアリング
+    public void onBlueSub(View view) {
+        DisplaySubScreen();
+
+    }
+    // テキスト
+    public void onSendSub(View view) {
+        DisplaySubScreen();
+    }
+
 }
