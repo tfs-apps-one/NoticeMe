@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
@@ -23,6 +24,8 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private Timer mainTimer1;                    //タイマー用
     private MainTimerTask mainTimerTask1;        //タイマタスククラス
     private Handler mHandler = new Handler();   //UI Threadへのpost用ハンドラ
-
     private boolean blinking = false;
     public Timer blinkTimer;					//タイマー用
     public BlinkingTask blinkTimerTask;		//タイマタスククラス
@@ -52,6 +54,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private String mCameraId = null;
     private boolean isOn = false;
 
+    //  音量
+    private AudioManager am;
+
+    //画面パーツ
+    private SeekBar seek_blinkinterval;
+    private SeekBar seek_volume;
+
+    //DB関連
     private int db_interval = 1;
     private int db_volume = 1;
 
@@ -103,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         }, new Handler());
 
+        //SeekBar
+        SeekSelect();
     }
 
     /*
@@ -119,6 +131,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if (alarm == null){
             alarm = MediaPlayer.create(this, R.raw.alarm);
         }
+        if (am == null) {
+            am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        }
+
         DisplayScreen();
     }
     @Override
@@ -161,6 +177,62 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //mRewardedVideoAd.destroy(this);
     }
 
+    /* **************************************************
+    シークバー　選択時の処理
+****************************************************/
+    public void SeekSelect(){
+        //  点滅間隔
+        seek_blinkinterval = (SeekBar)findViewById(R.id.bar_light);
+        seek_blinkinterval.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    //ツマミをドラッグした時
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                        if (blinkTimer == null){
+                            db_interval = seekBar.getProgress();
+                        }
+                        DisplayScreen();
+                    }
+                    //ツマミに触れた時
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        seekBar.setProgress(db_interval);
+                    }
+                    //ツマミを離した時
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        seekBar.setProgress(db_interval);
+                    }
+                }
+        );
+        //  点滅間隔
+        seek_volume = (SeekBar)findViewById(R.id.bar_volume);
+        seek_volume.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    //ツマミをドラッグした時
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                        if (!alarm.isPlaying()){
+                            db_volume = seekBar.getProgress();
+                            am.setStreamVolume(AudioManager.STREAM_MUSIC, (db_volume*3), 0);
+                        }
+                        DisplayScreen();
+                    }
+                    //ツマミに触れた時
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        seekBar.setProgress(db_volume);
+                    }
+                    //ツマミを離した時
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        seekBar.setProgress(db_volume);
+                    }
+                }
+        );
+
+    }
+
     /***************************************************
          画面描画処理
      **************************************************/
@@ -170,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         TextView txt_gps = findViewById(R.id.text_gps_status);
         TextView txt_blink = findViewById(R.id.text_light);
         TextView txt_volume = findViewById(R.id.text_volume);
+        TextView txt_mess = findViewById(R.id.text_mess);
 
         ImageButton img_gps = findViewById(R.id.btn_img_pos);
         ImageButton img_mail = findViewById(R.id.btn_img_mail);
@@ -180,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //位置情報取得ならば
         if (now_ido == 0.0f || now_keido == 0.0f){
             if (get_GPS == false) {
-                tmp_str = "左図アイコンのタップで現在位置を取得します";
+                tmp_str = "上図アイコンをタップすると現在位置を取得します";
             }
             else{
                 tmp_str = "現在位置・・・取得中・・・";
@@ -194,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             img_mail.setImageResource(R.drawable.mail1);
         }
         txt_gps.setText(tmp_str);
+        txt_gps.setTextColor(Color.GRAY);
 
         //ライト描画
         if (blinkTimer == null){
@@ -208,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         else {
             txt_blink.setText("点滅:" + db_interval);
         }
+        txt_blink.setTextColor(Color.GRAY);
 
         //サウンド描画
         if (alarm.isPlaying() == false){
@@ -216,10 +291,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         else{
             img_sound.setImageResource(R.drawable.sound1);
         }
-        txt_volume.setText("音量:"+db_volume);
+        if (db_volume == 0) {
+            txt_volume.setText("消音:" + db_volume);
+        }
+        else{
+            txt_volume.setText("音量:" + db_volume);
+        }
+        txt_volume.setTextColor(Color.GRAY);
 
         //近距離メッセージ
-       img_mess.setBackgroundResource(R.drawable.mess1);
+       img_mess.setImageResource(R.drawable.mess1);
+       txt_mess.setTextColor(Color.GRAY);
     }
 
     /***************************************************
@@ -243,11 +325,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
     // Light
     public void onLight(View view){
-        if (blinkTimer == null) {
-            light_ON();
+        //常灯の時
+        if (db_interval == 0){
+            if (blinking) {
+                light_OFF();
+            }
+            else{
+                light_ON();
+            }
         }
-        else{
-            light_OFF();
+        //点滅の時
+        else {
+            if (blinkTimer == null) {
+                light_ON();
+            } else {
+                light_OFF();
+            }
         }
         DisplayScreen();
     }
@@ -385,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
         try {
+            blinking = false;
             mCameraManager.setTorchMode(mCameraId, false);
         } catch (CameraAccessException e) {
             //エラー処理
