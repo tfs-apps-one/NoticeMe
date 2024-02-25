@@ -39,7 +39,6 @@
                 android:src="@drawable/back"
                 android:background="@drawable/bak_btn_2"
                 app:backgroundTint="@null"
-                android:onClick="onMainSub"
                 android:scaleType="fitCenter"
                 tools:ignore="SpeakableTextPresentCheck" />
 
@@ -54,7 +53,6 @@
                 android:layout_marginBottom="10dp"
                 android:src="@drawable/blue0"
                 android:background="@null"
-                android:onClick="onBlueSub"
                 android:scaleType="fitCenter"
                 tools:ignore="SpeakableTextPresentCheck" />
 
@@ -162,7 +160,6 @@
                 android:src="@drawable/send"
                 android:background="@drawable/bak_btn_2"
                 app:backgroundTint="@null"
-                android:onClick="onSendSub"
                 android:scaleType="fitCenter"
                 tools:ignore="SpeakableTextPresentCheck" />
 

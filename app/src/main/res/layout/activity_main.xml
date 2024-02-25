@@ -80,13 +80,14 @@
                         android:layout_marginBottom="10dp"
                         android:layout_weight="4"
                         android:gravity="center"
-                        android:text = "　現在位置・・・・"
+                        android:text = "現在位置・・・・"
                         android:textStyle="bold"
                         tools:ignore="SpeakableTextPresentCheck" />
             </LinearLayout>
 
         </LinearLayout>
 
+        <!--
         <LinearLayout
             android:id="@+id/linearLayout_61"
             android:layout_width="match_parent"
@@ -131,6 +132,7 @@
                 />
 
         </LinearLayout>
+        -->
 
         <LinearLayout
             android:id="@+id/linearLayout_21"
