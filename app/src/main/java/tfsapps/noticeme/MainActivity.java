@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         /* 送信 */
         String all_mailaddr = "";
         String message = "";
-        String mailtitle = "アプリ通知メール";
+        String mailtitle = "アプリ「気づいて通知」からのお知らせ";
         message = "" + mess_mail + "\n";
         composeEmail(all_mailaddr, mailtitle, message);
     }
@@ -489,7 +489,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         now_ido = location.getLatitude();
         now_keido = location.getLongitude();
-        mess_mail = "現在の緯度,経度\n" + "http://maps.apple.com/?q=" + location.getLatitude() + "," + location.getLongitude();
+
+        //test_make 大津駅の場所　35.003653, 135.864815
+//        now_keido = 135.8648150;
+//        now_ido = 35.0036530;
+
+        mess_mail = "現在の緯度,経度\n" + "http://maps.apple.com/?q=" + now_ido + "," + now_keido;
         DisplayScreen();
     }
 

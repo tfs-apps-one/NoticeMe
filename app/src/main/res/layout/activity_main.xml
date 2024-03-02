@@ -80,7 +80,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_weight="4"
                         android:gravity="center"
-                        android:text = "現在位置・・・・"
+                        android:text = ""
                         android:textStyle="bold"
                         tools:ignore="SpeakableTextPresentCheck" />
             </LinearLayout>
@@ -264,7 +264,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:backgroundTint="@null"
-                android:text="広告エリア"
+                android:text=""
                 android:textStyle="bold"
                 android:gravity="center|center"
                 />
