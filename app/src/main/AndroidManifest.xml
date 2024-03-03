@@ -26,6 +26,11 @@
         android:roundIcon="@drawable/nm256"
         android:supportsRtl="true"
         android:theme="@style/Theme.NoticeMe">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4924620089567925~2954468767" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

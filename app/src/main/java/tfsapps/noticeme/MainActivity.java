@@ -45,6 +45,9 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private static final int REQUEST_CODE_BLUETOOTH_SCAN = 1234;
@@ -81,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     //アラーム
     private MediaPlayer alarm;
     private boolean is_set_alarm = true;        //アラーム設定
+
+    // 広告
+    private AdView mAdview;
 
     //BlueMessage
     /*
@@ -140,6 +146,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         //SeekBar
         SeekSelect();
+
+        //広告
+        mAdview = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdview.loadAd(adRequest);
+
 //        BlueToothInit();
     }
 
