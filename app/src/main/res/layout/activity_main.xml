@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,53 +15,10 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/linearLayout_51"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginBottom="3dp"
-            android:background="@drawable/bak_btn_2"
-            app:backgroundTint="@null"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/btn_img_pos"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="2"
-                android:src="@drawable/gps0"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-            <TextView
-                android:id="@+id/text_gps_status"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="4"
-                android:gravity="center|left"
-                android:text = "　現在位置・・・・"
-                tools:ignore="SpeakableTextPresentCheck" />
-        </LinearLayout>
-
-
-        <LinearLayout
             android:id="@+id/linearLayout_11"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:layout_marginStart="3dp"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="3dp"
@@ -72,91 +30,110 @@
 
             <ImageButton
                 android:id="@+id/btn_img_mail"
-                android:layout_width="0dp"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="5dp"
-                android:layout_weight="2"
-                android:src="@drawable/mail0"
+                android:src="@drawable/mail1"
                 android:background="@null"
+                android:onClick="onMail"
                 android:scaleType="fitCenter"
                 tools:ignore="SpeakableTextPresentCheck" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout_12"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="6"
-                android:layout_alignParentStart="true"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/edit_address1"
+                <LinearLayout
+                    android:id="@+id/linearLayout_12"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:inputType="textEmailAddress"
-                    android:text = "メールアドレス１"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/bak_btn_1"
+                    app:backgroundTint="@null"
+                    android:layout_alignParentStart="true"
+                    android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/edit_address2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:inputType="textEmailAddress"
-                    android:text = "メールアドレス２"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                    <ImageButton
+                        android:id="@+id/btn_img_pos"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/gps0"
+                        android:background="@null"
+                        android:onClick="onPos"
+                        android:scaleType="fitCenter"
+                        tools:ignore="SpeakableTextPresentCheck" />
 
-                <EditText
-                    android:id="@+id/edit_address3"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:text = "メールアドレス３"
-                    tools:ignore="SpeakableTextPresentCheck" />
-
-                <EditText
-                    android:id="@+id/edit_address4"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:text = "メールアドレス４"
-                    tools:ignore="SpeakableTextPresentCheck" />
-
-                <EditText
-                    android:id="@+id/edit_address5"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:text = "メールアドレス５"
-                    tools:ignore="SpeakableTextPresentCheck" />
-
+                    <TextView
+                        android:id="@+id/text_gps_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:text = ""
+                        android:textStyle="bold"
+                        tools:ignore="SpeakableTextPresentCheck" />
             </LinearLayout>
 
         </LinearLayout>
+
+        <!--
+        <LinearLayout
+            android:id="@+id/linearLayout_61"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/bak_btn_1"
+            app:backgroundTint="@null"
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_img_mess"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/mess0"
+                android:background="@null"
+                android:onClick="onMess"
+                android:scaleType="fitCenter"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/text_mess"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center|left"
+                android:text="Bluetoothにて近距離のメッセージ交換が可能です。（10m以内）"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                />
+
+        </LinearLayout>
+        -->
 
         <LinearLayout
             android:id="@+id/linearLayout_21"
@@ -173,21 +150,21 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/btn_img_sound"
-                android:layout_width="0dp"
+                android:id="@+id/btn_img_light"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="5dp"
-                android:layout_weight="2"
                 android:src="@drawable/light0"
                 android:background="@null"
+                android:onClick="onLight"
                 android:scaleType="fitCenter"
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
-                android:id="@+id/text_volume"
+                android:id="@+id/text_light"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -197,22 +174,22 @@
                 android:layout_marginEnd="5dp"
                 android:gravity="center|right"
                 android:text="1"
+                android:textSize="20dp"
                 android:textColor="@color/teal_700"
                 android:textStyle="bold"
-                android:textSize="25dp"
                 />
 
             <SeekBar
-                android:id="@+id/bar_volume"
+                android:id="@+id/bar_light"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="20dp"
-                android:progress="5"
-                android:max="15"
+                android:progress="1"
+                android:max="5"
                 android:progressBackgroundTint="@color/design_default_color_primary_variant"
                 />
         </LinearLayout>
@@ -232,22 +209,21 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/btn_img_light"
-                android:layout_width="0dp"
+                android:id="@+id/btn_img_sound"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="5dp"
-                android:layout_weight="2"
                 android:background="@null"
+                android:onClick="onAlarm"
                 android:scaleType="fitCenter"
-
                 android:src="@drawable/sound0"
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
-                android:id="@+id/text_light"
+                android:id="@+id/text_volume"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -257,22 +233,22 @@
                 android:layout_marginEnd="5dp"
                 android:gravity="center|right"
                 android:text="1"
+                android:textSize="20dp"
                 android:textColor="@color/teal_700"
                 android:textStyle="bold"
-                android:textSize="25dp"
                 />
 
             <SeekBar
-                android:id="@+id/bar_light"
+                android:id="@+id/bar_volume"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="20dp"
-                android:progress="5"
-                android:max="15"
+                android:progress="1"
+                android:max="5"
                 android:progressBackgroundTint="@color/design_default_color_primary_variant"
                 />
         </LinearLayout>
@@ -284,15 +260,27 @@
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
 
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"
+                ads:adSize="BANNER"
+                ads:adUnitId="ca-app-pub-4924620089567925/5117010947">
+            </com.google.android.gms.ads.AdView>
+            <!--
             <TextView
                 android:id="@+id/text_sample"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:backgroundTint="@null"
-                android:text="広告エリア"
+                android:text=""
                 android:textStyle="bold"
                 android:gravity="center|center"
                 />
+                -->
         </LinearLayout>
 
 
