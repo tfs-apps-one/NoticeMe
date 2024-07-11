@@ -47,6 +47,9 @@ import java.util.TimerTask;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -147,10 +150,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //SeekBar
         SeekSelect();
 
+        MobileAds.initialize(this, initializationStatus -> {
+            // 初期化完了後に広告をロード
+            mAdview = findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdview.loadAd(adRequest);
+        });
+
         //広告
-        mAdview = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdview.loadAd(adRequest);
+//        MobileAds.initialize(this);
+//        mAdview = findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdview.loadAd(adRequest);
 
 //        BlueToothInit();
     }
@@ -633,9 +644,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 }
-    /***************************************************
-        サブ画面処理
-     ****************************************************/
+/***************************************************
+ サブ画面処理
+ ****************************************************/
     /*
     public void DisplaySubScreen(){
         String tmp_text = "";
@@ -658,9 +669,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         DisplaySubScreen();
     }
 */
-    /***************************************************
-         BlueTooth処理
-     ****************************************************/
+/***************************************************
+ BlueTooth処理
+ ****************************************************/
     /*
     public void BlueToothInit(){
         // BluetoothAdapterの取得

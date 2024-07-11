@@ -270,6 +270,7 @@
                 ads:adSize="BANNER"
                 ads:adUnitId="ca-app-pub-4924620089567925/5117010947">
             </com.google.android.gms.ads.AdView>
+
             <!--
             <TextView
                 android:id="@+id/text_sample"
